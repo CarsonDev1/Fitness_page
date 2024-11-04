@@ -73,6 +73,56 @@ body {
 	position: relative;
 }
 
+.sec-com {
+	--padding-section: 4.8rem;
+	--padding-section-tl: 2.4rem;
+	--padding-section-mobile: 1.2rem;
+
+	padding: var(--padding-section) 0;
+}
+@media screen and (min-width: 1200px) {
+	.sec-com {
+		padding: var(--padding-section-tl) 0;
+	}
+}
+@media screen and (max-width: 576px) {
+	.sec-com {
+		padding: var(--padding-section-mobile) 0;
+	}
+}
+
+.swiper-pagination-bullet {
+	background-color: #f36100;
+	opacity: 0.7;
+	width: 12px;
+	height: 12px;
+	transition: opacity 0.3s, transform 0.3s;
+}
+.swiper-pagination-bullet-active {
+	opacity: 1;
+	transform: scale(1.2);
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+	color: #f36100;
+	font-size: 1.5rem;
+	padding: 10px;
+	border-radius: 50%;
+	background-color: rgba(0, 0, 0, 0.5);
+	transition: background-color 0.3s, transform 0.3s;
+}
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+	background-color: #f36100;
+	color: white;
+	transform: scale(1.1);
+}
+
+.font-oswald {
+	font-family: 'Oswald', sans-serif;
+}
+
 @keyframes App-logo-spin {
 	from {
 		transform: rotate(0deg);

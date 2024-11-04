@@ -75,21 +75,21 @@ function Navbar() {
 	return (
 		<header
 			className={`fixed top-0 w-full z-50 transition-all duration-300 py-4 ${
-				isScrolled ? 'bg-[#151515] shadow-lg' : ''
+				isScrolled ? 'bg-[#151515] shadow-lg' : 'bg-[#151515] md:bg-transparent'
 			}`}
 		>
 			<div className='container-cus'>
-				<div className='mx-auto px-6 flex justify-between items-center'>
+				<div className='flex items-center justify-between px-6 mx-auto'>
 					<Link to='/' className='flex items-center' onClick={() => setActiveMenu('')}>
-						<img src={logo} alt='Logo' className='h-12 md:h-12' />
+						<img src={logo} alt='Logo' className='block object-cover w-full h-12 md:h-8' />
 					</Link>
 
-					<div className='md:hidden text-white text-3xl cursor-pointer z-20' onClick={toggleMenu}>
+					<div className='z-20 text-3xl text-white cursor-pointer md:hidden' onClick={toggleMenu}>
 						{isMenuOpen ? '✖' : '☰'}
 					</div>
 
 					{isMenuOpen && (
-						<div className='fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden' onClick={toggleMenu}></div>
+						<div className='fixed inset-0 z-10 bg-black bg-opacity-50 md:hidden' onClick={toggleMenu}></div>
 					)}
 
 					<nav
@@ -97,7 +97,7 @@ function Navbar() {
 							isMenuOpen ? 'translate-x-0' : '-translate-x-full'
 						} md:translate-x-0 fixed md:relative top-0 left-0 md:flex md:items-center w-3/4 md:w-auto h-full md:h-auto bg-gray-800 md:bg-transparent transition-transform duration-300 ease-in-out z-20`}
 					>
-						<ul className='flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10 p-6 md:p-0 text-lg'>
+						<ul className='flex flex-col items-start gap-6 p-6 text-lg md:flex-row md:items-center md:gap-10 md:p-0 font-oswald'>
 							{['home', 'about', 'coach', 'course', 'blog', 'contact'].map((menu) => (
 								<Link
 									key={menu}
@@ -122,7 +122,7 @@ function Navbar() {
 									More
 								</div>
 								{isSubmenuOpen && (
-									<div className='absolute -left-full mt-2 w-48 bg-gray-900 rounded-lg shadow-2xl py-2'>
+									<div className='absolute w-48 py-2 mt-2 bg-gray-900 rounded-lg shadow-2xl -left-full'>
 										<Link
 											to='/bmi'
 											className='block px-4 py-3 text-white text-base hover:bg-[#F36100] hover:text-gray-900 rounded-lg transition duration-300 ease-in-out transform hover:scale-105'
@@ -150,11 +150,11 @@ function Navbar() {
 						</ul>
 					</nav>
 
-					<div className='hidden md:flex items-center gap-4'>
+					<div className='items-center hidden gap-4 md:flex'>
 						{!isLoggedIn ? (
 							<Link
 								to='/signin'
-								className='bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600'
+								className='px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600'
 							>
 								Login
 							</Link>
@@ -162,12 +162,12 @@ function Navbar() {
 							<div className='relative' ref={userRef}>
 								<button
 									onClick={handleUserClick}
-									className='text-white bg-gray-700 px-4 py-2 rounded-md hover:bg-gray-600'
+									className='px-4 py-2 text-white bg-gray-700 rounded-md hover:bg-gray-600'
 								>
 									{userName || 'User'}
 								</button>
 								{isUserMenuOpen && (
-									<div className='absolute left-0 mt-2 w-48 bg-gray-900 rounded-lg shadow-2xl py-2 z-20'>
+									<div className='absolute left-0 z-20 w-48 py-2 mt-2 bg-gray-900 rounded-lg shadow-2xl'>
 										<Link
 											to='/userProfile'
 											className='block px-4 py-3 text-white hover:bg-[#F36100] hover:text-gray-900 rounded-lg transition duration-300'
