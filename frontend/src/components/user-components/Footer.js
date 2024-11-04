@@ -5,7 +5,7 @@ function Footer() {
 		<div className='text-gray-300 bg-gray-900'>
 			{/* Get In Touch Section */}
 			<div className='py-10 bg-gray-800'>
-				<div className='container px-6 mx-auto text-center md:px-12 md:text-left'>
+				<div className='px-6 mx-auto text-center container-cus md:text-left'>
 					<div className='flex flex-col space-y-8 text-center md:flex-row md:justify-around md:text-left md:space-y-0'>
 						<div className='flex flex-col items-center space-y-3'>
 							<div className='flex items-center justify-center bg-orange-600 rounded-full size-14'>
@@ -31,7 +31,7 @@ function Footer() {
 
 			{/* Footer Main Section */}
 			<section className='py-16'>
-				<div className='container px-6 mx-auto md:px-12'>
+				<div className='container-cus'>
 					<div className='grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4'>
 						{/* About Section */}
 						<div className='flex flex-col items-center space-y-6 text-center lg:text-left'>
