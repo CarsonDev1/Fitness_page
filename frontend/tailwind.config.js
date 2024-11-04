@@ -2,7 +2,11 @@
 module.exports = {
 	content: ['./src/**/*.{html,js}'],
 	theme: {
-		extend: {},
+		extend: {
+			skew: {
+				'-10': '-10deg',
+			},
+		},
 	},
 	plugins: [],
 };

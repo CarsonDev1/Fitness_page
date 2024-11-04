@@ -154,7 +154,7 @@ function Navbar() {
 						{!isLoggedIn ? (
 							<Link
 								to='/signin'
-								className='px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600'
+								className='px-4 py-2 text-white bg-orange-600 rounded-md hover:bg-orange-400 skew-x-[-10deg] transform'
 							>
 								Login
 							</Link>
@@ -162,7 +162,7 @@ function Navbar() {
 							<div className='relative' ref={userRef}>
 								<button
 									onClick={handleUserClick}
-									className='px-4 py-2 text-white bg-gray-700 rounded-md hover:bg-gray-600'
+									className='px-4 py-2 text-white bg-orange-600 rounded-md hover:bg-orange-400 skew-x-[-10deg] transform'
 								>
 									{userName || 'User'}
 								</button>

@@ -1,153 +1,144 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Sử dụng useNavigate để điều hướng
-import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SignUp() {
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const navigate = useNavigate(); // Sử dụng navigate để điều hướng
+	const [password, setPassword] = useState('');
+	const [email, setEmail] = useState('');
+	const [name, setName] = useState('');
+	const [emailError, setEmailError] = useState('');
+	const [passwordError, setPasswordError] = useState('');
+	const navigate = useNavigate();
 
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
-    return regex.test(email);
-  };
+	const validateEmail = (email) => {
+		const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return regex.test(email);
+	};
 
-  const validatePassword = (password) => {
-    const regex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // Password regex
-    return regex.test(password);
-  };
+	const validatePassword = (password) => {
+		const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+		return regex.test(password);
+	};
 
-  const handleEmailChange = (e) => {
-    const value = e.target.value;
-    setEmail(value);
-    if (!validateEmail(value)) {
-      setEmailError("Please enter a valid email address");
-    } else {
-      setEmailError("");
-    }
-  };
+	const handleEmailChange = (e) => {
+		const value = e.target.value;
+		setEmail(value);
+		if (!validateEmail(value)) {
+			setEmailError('Please enter a valid email address');
+		} else {
+			setEmailError('');
+		}
+	};
 
-  const handleNameChange = (e) => {
-    const value = e.target.value;
-    setName(value);
-  };
+	const handleNameChange = (e) => {
+		const value = e.target.value;
+		setName(value);
+	};
 
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    setPassword(value);
-    if (!validatePassword(value)) {
-      setPasswordError(
-        "Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 lowercase letter, and 1 special character."
-      );
-    } else {
-      setPasswordError("");
-    }
-  };
+	const handlePasswordChange = (e) => {
+		const value = e.target.value;
+		setPassword(value);
+		if (!validatePassword(value)) {
+			setPasswordError(
+				'Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 lowercase letter, and 1 special character.'
+			);
+		} else {
+			setPasswordError('');
+		}
+	};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (emailError || passwordError) {
+			toast.error('Please fix the errors before submitting.');
+			return;
+		}
+		try {
+			const response = await axios.post('http://localhost:5000/api/authenticate/register', {
+				email,
+				password,
+				name,
+			});
+			toast.success(response.data.msg);
+			navigate('/signin');
+		} catch (error) {
+			toast.error(error.response.data.msg);
+		}
+	};
 
-    // Check if the email and password formats are valid before submitting
-    if (emailError || passwordError) {
-      toast.error("Please fix the errors before submitting.");
-      return;
-    }
+	return (
+		<section className='flex items-center justify-center min-h-screen bg-[#151515]'>
+			<div className='max-w-md p-8 bg-white rounded-lg shadow-2xl container-cus'>
+				<h3 className='mb-6 text-3xl font-bold text-center text-gray-800'>Sign Up</h3>
 
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/authenticate/register",
-        { email, password, name }
-      );
-      toast.success(response.data.msg);
+				<form onSubmit={handleSubmit} className='space-y-6'>
+					<div>
+						<input
+							type='email'
+							className='w-full px-4 py-3 text-gray-700 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300'
+							placeholder='Email'
+							value={email}
+							onChange={handleEmailChange}
+							required
+						/>
+						{emailError && <div className='mt-1 text-sm text-red-600'>{emailError}</div>}
+					</div>
 
-      // Điều hướng tới trang đăng nhập sau khi đăng ký thành công
-      navigate("/signin"); // Điều hướng người dùng đến trang đăng nhập
-    } catch (error) {
-      toast.error(error.response.data.msg);
-    }
-  };
+					<div>
+						<input
+							type='text'
+							className='w-full px-4 py-3 text-gray-700 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300'
+							placeholder='Name'
+							onChange={handleNameChange}
+							value={name}
+							required
+						/>
+					</div>
 
-  return (
-    <section className="" style={{ margin: "50px" }}>
-      <div className="container-fluid">
-        <div className="row">
-          <div className="text-black">
-            <div className="d-flex justify-content-center align-items-center">
-              <form style={{ width: "23rem" }} onSubmit={handleSubmit}>
-                <h3
-                  className="fw-normal mb-3 pb-3"
-                  style={{ letterSpacing: "1px" }}
-                >
-                  Sign Up
-                </h3>
-                <div className="form-outline mb-4">
-                  <input
-                    type="email"
-                    className="form-control form-control-lg"
-                    placeholder="Email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    required
-                  />
-                  {emailError && (
-                    <div className="text-danger">{emailError}</div>
-                  )}
-                </div>
-                <div className="form-outline mb-4">
-                  <input
-                    type="text"
-                    className="form-control form-control-lg"
-                    placeholder="Name"
-                    onChange={handleNameChange}
-                    value={name}
-                    required
-                  />
-                </div>
-                <div className="form-outline mb-4">
-                  <input
-                    type="password"
-                    className="form-control form-control-lg"
-                    placeholder="Password"
-                    value={password}
-                    onChange={handlePasswordChange}
-                    required
-                  />
-                  {passwordError && (
-                    <div className="text-danger">{passwordError}</div>
-                  )}
-                </div>
-                <div className="pt-1 mb-4">
-                  <button
-                    className="btn btn-info btn-lg btn-block"
-                    type="submit"
-                    disabled={emailError || passwordError}
-                  >
-                    Sign Up
-                  </button>
-                </div>
-                <p className="small mb-5 pb-lg-2">
-                  <Link className="text-muted" to="/forgotpassword">
-                    Forgot password?
-                  </Link>
-                </p>
-                <p>
-                  Already have an account?{" "}
-                  <Link to="/signin" className="link-info">
-                    Log in
-                  </Link>
-                </p>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <ToastContainer />
-    </section>
-  );
+					<div>
+						<input
+							type='password'
+							className='w-full px-4 py-3 text-gray-700 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300'
+							placeholder='Password'
+							value={password}
+							onChange={handlePasswordChange}
+							required
+						/>
+						{passwordError && <div className='mt-1 text-sm text-red-600'>{passwordError}</div>}
+					</div>
+
+					<div className='flex items-center justify-center'>
+						<button
+							type='submit'
+							className='px-8 py-3 font-bold text-white uppercase bg-gradient-to-r from-orange-600 to-red-600 rounded-md shadow-lg transform hover:from-orange-500 hover:to-red-500 transition duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-orange-500 skew-x-[-10deg] w-full'
+							disabled={emailError || passwordError}
+						>
+							Sign Up
+						</button>
+					</div>
+				</form>
+
+				<div className='mt-6 text-center'>
+					<Link to='/forgotpassword' className='text-sm text-gray-500 transition hover:text-indigo-500'>
+						Forgot password?
+					</Link>
+				</div>
+
+				<div className='mt-4 text-center'>
+					<p className='text-gray-600'>
+						Already have an account?{' '}
+						<Link
+							to='/signin'
+							className='font-medium text-indigo-500 hover:text-indigo-400 hover:underline'
+						>
+							Log in
+						</Link>
+					</p>
+				</div>
+			</div>
+			<ToastContainer />
+		</section>
+	);
 }
