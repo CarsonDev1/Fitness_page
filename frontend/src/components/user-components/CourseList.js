@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './CourseList.css';
 import { Link } from 'react-router-dom';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Import the Quill styles
+import './CourseList.css';
 
 const CoursesList = () => {
 	const [courses, setCourses] = useState([]);
@@ -27,8 +25,8 @@ const CoursesList = () => {
 		fetchCourses();
 	}, []);
 
-	if (loading) return <div className='loading'>Loading courses...</div>;
-	if (error) return <div className='error'>Error: {error}</div>;
+	if (loading) return <div className='text-lg font-semibold text-center text-orange-600'>Loading courses...</div>;
+	if (error) return <div className='text-lg font-semibold text-center text-red-500'>Error: {error}</div>;
 
 	const indexOfLastCourse = currentPage * coursesPerPage;
 	const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
@@ -44,45 +42,63 @@ const CoursesList = () => {
 	};
 
 	return (
-		<div className='courses-list-container'>
-			<h1 className='courses-title'>Available Courses</h1>
-			<div className='courses-grid'>
-				{currentCourses.map((course) => (
-					<div key={course._id} className='course-card'>
-						<div className='course-header'>
-							<h2 className='course-name'>{course.name}</h2>
-							<span className='course-coach'>
-								Coach: {course.coachId ? course.coachId.name : 'Unknown'}
-							</span>
-						</div>
-						{/* Use dangerouslySetInnerHTML to render the description as HTML */}
-						<p className='course-description' dangerouslySetInnerHTML={{ __html: course.description }} />
-						<div className='course-workouts'>
-							<h3>Workouts</h3>
-							<ul>
-								{course.workoutId &&
-									course.workoutId
-										.slice(0, 3)
-										.map((workout) => <li key={workout._id}>{workout.name}</li>)}
-							</ul>
-						</div>
-						<Link to={`/course/${course._id}`} className='details-btn'>
-							View Details
-						</Link>
-					</div>
-				))}
-			</div>
+		<div className='py-12 bg-[#111827]'>
+			<div className='container-cus'>
+				<h1 className='mb-8 text-4xl font-bold text-center text-orange-600'>Available Courses</h1>
 
-			<div className='pagination'>
-				<button className='pagination-btn' onClick={handlePrevPage} disabled={currentPage === 1}>
-					Previous
-				</button>
-				<span className='page-info'>
-					Page {currentPage} of {totalPages}
-				</span>
-				<button className='pagination-btn' onClick={handleNextPage} disabled={currentPage === totalPages}>
-					Next
-				</button>
+				<div className='grid gap-8 md:grid-cols-2 lg:grid-cols-3'>
+					{currentCourses.map((course) => (
+						<div
+							key={course._id}
+							className='p-6 transition-transform duration-300 transform border-2 border-orange-600 rounded-lg shadow-lg bg-slate-200 hover:scale-105 hover:shadow-xl'
+						>
+							<div className='flex flex-col items-start mb-4'>
+								<h2 className='mb-1 text-2xl font-semibold text-orange-600'>{course.name}</h2>
+								<span className='text-sm '>
+									Coach: {course.coachId ? course.coachId.name : 'Unknown'}
+								</span>
+							</div>
+							<div className='mb-4'>
+								<p className='text-black' dangerouslySetInnerHTML={{ __html: course.description }} />
+							</div>
+							<div className='mb-4'>
+								<h3 className='mb-2 text-lg font-semibold text-orange-600'>Workouts</h3>
+								<ul className='list-disc list-inside '>
+									{course.workoutId &&
+										course.workoutId
+											.slice(0, 3)
+											.map((workout) => <li key={workout._id}>{workout.name}</li>)}
+								</ul>
+							</div>
+							<Link
+								to={`/course/${course._id}`}
+								className='inline-block w-full py-2 font-semibold text-center text-white transition duration-300 bg-orange-600 rounded-md hover:bg-orange-500'
+							>
+								View Details
+							</Link>
+						</div>
+					))}
+				</div>
+
+				<div className='flex items-center justify-center gap-4 mt-8'>
+					<button
+						className='px-4 py-2 font-semibold text-white bg-gray-700 rounded-md disabled:bg-gray-600 disabled:cursor-not-allowed'
+						onClick={handlePrevPage}
+						disabled={currentPage === 1}
+					>
+						Previous
+					</button>
+					<span className='text-white'>
+						Page {currentPage} of {totalPages}
+					</span>
+					<button
+						className='px-4 py-2 font-semibold text-white bg-gray-700 rounded-md disabled:bg-gray-600 disabled:cursor-not-allowed'
+						onClick={handleNextPage}
+						disabled={currentPage === totalPages}
+					>
+						Next
+					</button>
+				</div>
 			</div>
 		</div>
 	);

@@ -13,3 +13,9 @@ body {
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+@layer components {
+	.focus {
+		@apply transition-all duration-300 rounded-sm ring-offset-4 ring-offset-transparent focus-within:outline-none focus-within:ring-2 focus-within:ring-red/50 focus:outline-none focus:ring-2 focus:ring-red/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red/50;
+	}
+}

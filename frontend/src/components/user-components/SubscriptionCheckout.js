@@ -73,117 +73,122 @@ const SubscriptionCheckout = () => {
 	};
 
 	if (!course) {
-		return <div className='text-center text-gray-500 mt-10'>Course not found</div>;
+		return <div className='mt-10 text-center text-gray-500'>Course not found</div>;
 	}
 
 	return (
-		<div className='max-w-2xl mx-auto p-6'>
-			<ToastContainer />
-			{step === 1 && (
-				<div className='bg-orange-50 rounded-lg p-6 shadow-lg space-y-6'>
-					<h1 className='text-2xl font-bold text-orange-600 text-center'>Confirm Course Information</h1>
-					<div className='text-center'>
-						<h2 className='text-xl font-semibold text-gray-800'>{course.name}</h2>
-						<div className='mt-4 space-y-2'>
-							<p className='text-gray-700'>
-								<strong>Price:</strong> {course.price} đ
-							</p>
-							<p className='text-gray-700'>
-								<strong>Duration:</strong> {course.duration}
-							</p>
-							<p className='text-gray-700'>
-								<strong>Coach:</strong>{' '}
-								{course.coachId
-									? course.coachId.accountId?.name || course.coachId._id
-									: 'No coach assigned'}
-							</p>
+		<div className='bg-[#111827] sec-com'>
+			<div className='max-w-3xl container-cus'>
+				<ToastContainer />
+				{step === 1 && (
+					<div className='p-6 space-y-6 rounded-lg shadow-lg bg-orange-50'>
+						<h1 className='text-2xl font-bold text-center text-orange-600'>Confirm Course Information</h1>
+						<div className='text-center'>
+							<h2 className='text-2xl font-semibold text-gray-800'>{course.name}</h2>
+							<div className='mt-4 space-y-2'>
+								<p className='text-gray-700'>
+									<strong>Price:</strong>{' '}
+									<span className='text-xl font-semibold text-orange-700'>
+										{course.price.toLocaleString()} đ
+									</span>
+								</p>
+								<p className='text-gray-700'>
+									<strong>Duration:</strong> {course.duration}
+								</p>
+								<p className='text-gray-700'>
+									<strong>Coach:</strong>{' '}
+									{course.coachId
+										? course.coachId.accountId?.name || course.coachId._id
+										: 'No coach assigned'}
+								</p>
+							</div>
 						</div>
+						<button
+							className='w-full py-3 mt-6 font-semibold text-white transition-colors bg-orange-600 rounded-lg hover:bg-orange-700'
+							onClick={handleNext}
+						>
+							Next
+						</button>
 					</div>
-					<button
-						className='w-full py-3 mt-6 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors'
-						onClick={handleNext}
-					>
-						Next
-					</button>
-				</div>
-			)}
+				)}
 
-			{step === 2 && (
-				<div className='bg-orange-50 rounded-lg p-6 shadow-lg space-y-4 text-gray-900'>
-					<h2 className='text-2xl font-bold text-orange-600 text-center'>Enter Your Details</h2>
-					<div className='space-y-4'>
-						<div className='flex flex-col'>
-							<label className='text-gray-700'>Weight (kg):</label>
-							<input
-								type='number'
-								value={weight}
-								onChange={(e) => setWeight(e.target.value)}
-								className='p-2 border border-orange-200 rounded'
-								required
-							/>
-							{errors.weight && <p className='text-red-500 text-sm'>{errors.weight}</p>}
+				{step === 2 && (
+					<div className='p-6 space-y-4 text-gray-900 rounded-lg shadow-lg bg-orange-50'>
+						<h2 className='text-2xl font-bold text-center text-orange-600'>Enter Your Details</h2>
+						<div className='space-y-4'>
+							<div className='flex flex-col'>
+								<label className='text-gray-700'>Weight (kg):</label>
+								<input
+									type='number'
+									value={weight}
+									onChange={(e) => setWeight(e.target.value)}
+									className='p-2 border border-orange-200 rounded'
+									required
+								/>
+								{errors.weight && <p className='text-sm text-red-500'>{errors.weight}</p>}
+							</div>
+							<div className='flex flex-col'>
+								<label className='text-gray-700'>Height (cm):</label>
+								<input
+									type='number'
+									value={height}
+									onChange={(e) => setHeight(e.target.value)}
+									className='p-2 border border-orange-200 rounded'
+									required
+								/>
+								{errors.height && <p className='text-sm text-red-500'>{errors.height}</p>}
+							</div>
+							<div className='flex flex-col'>
+								<label className='text-gray-700'>Level:</label>
+								<input
+									type='text'
+									value={level}
+									onChange={(e) => setLevel(e.target.value)}
+									className='p-2 border border-orange-200 rounded'
+									required
+								/>
+								{errors.level && <p className='text-sm text-red-500'>{errors.level}</p>}
+							</div>
+							<div className='flex flex-col'>
+								<label className='text-gray-700'>Days per Week:</label>
+								<input
+									type='text'
+									value={dayPerWeek}
+									onChange={(e) => setDayPerWeek(e.target.value)}
+									className='p-2 border border-orange-200 rounded'
+									required
+								/>
+								{errors.dayPerWeek && <p className='text-sm text-red-500'>{errors.dayPerWeek}</p>}
+							</div>
+							<div className='flex flex-col'>
+								<label className='text-gray-700'>Hours per Day:</label>
+								<input
+									type='text'
+									value={hourPerDay}
+									onChange={(e) => setHourPerDay(e.target.value)}
+									className='p-2 border border-orange-200 rounded'
+									required
+								/>
+								{errors.hourPerDay && <p className='text-sm text-red-500'>{errors.hourPerDay}</p>}
+							</div>
 						</div>
-						<div className='flex flex-col'>
-							<label className='text-gray-700'>Height (cm):</label>
-							<input
-								type='number'
-								value={height}
-								onChange={(e) => setHeight(e.target.value)}
-								className='p-2 border border-orange-200 rounded'
-								required
-							/>
-							{errors.height && <p className='text-red-500 text-sm'>{errors.height}</p>}
-						</div>
-						<div className='flex flex-col'>
-							<label className='text-gray-700'>Level:</label>
-							<input
-								type='text'
-								value={level}
-								onChange={(e) => setLevel(e.target.value)}
-								className='p-2 border border-orange-200 rounded'
-								required
-							/>
-							{errors.level && <p className='text-red-500 text-sm'>{errors.level}</p>}
-						</div>
-						<div className='flex flex-col'>
-							<label className='text-gray-700'>Days per Week:</label>
-							<input
-								type='text'
-								value={dayPerWeek}
-								onChange={(e) => setDayPerWeek(e.target.value)}
-								className='p-2 border border-orange-200 rounded'
-								required
-							/>
-							{errors.dayPerWeek && <p className='text-red-500 text-sm'>{errors.dayPerWeek}</p>}
-						</div>
-						<div className='flex flex-col'>
-							<label className='text-gray-700'>Hours per Day:</label>
-							<input
-								type='text'
-								value={hourPerDay}
-								onChange={(e) => setHourPerDay(e.target.value)}
-								className='p-2 border border-orange-200 rounded'
-								required
-							/>
-							{errors.hourPerDay && <p className='text-red-500 text-sm'>{errors.hourPerDay}</p>}
+						<div className='flex justify-between mt-6'>
+							<button
+								className='px-4 py-2 text-gray-700 transition-colors bg-gray-200 rounded-lg hover:bg-gray-300'
+								onClick={handleBack}
+							>
+								Back
+							</button>
+							<button
+								className='px-4 py-2 font-semibold text-white transition-transform transform bg-orange-600 rounded-lg hover:bg-orange-700 hover:scale-105'
+								onClick={handlePayment}
+							>
+								Proceed to Payment
+							</button>
 						</div>
 					</div>
-					<div className='flex justify-between mt-6'>
-						<button
-							className='py-2 px-4 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors'
-							onClick={handleBack}
-						>
-							Back
-						</button>
-						<button
-							className='py-2 px-4 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-transform transform hover:scale-105'
-							onClick={handlePayment}
-						>
-							Proceed to Payment
-						</button>
-					</div>
-				</div>
-			)}
+				)}
+			</div>
 		</div>
 	);
 };
