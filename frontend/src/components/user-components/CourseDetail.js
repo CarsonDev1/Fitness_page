@@ -3,6 +3,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import { Pagination, Navigation } from 'swiper/modules';
+import SearchBar from './blog-components/SearchBar';
+import RecentPosts from './course-components/RecentPosts';
+import Categories from './course-components/Categories';
+import img1 from '../../assets/image/blog-page/1.webp';
+import img2 from '../../assets/image/blog-page/2.webp';
+import img3 from '../../assets/image/blog-page/3.webp';
+import TertiaryButton from './blog-components/TertiaryButton';
 
 function CourseDetails() {
 	const { id } = useParams();
@@ -10,6 +22,10 @@ function CourseDetails() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
+	const [searchTerm, setSearchTerm] = useState('');
+
+	// Đặt mảng images tạm thời để kiểm tra Swiper
+	const images = [img1, img2, img3];
 
 	useEffect(() => {
 		const fetchCourse = async () => {
@@ -41,80 +57,105 @@ function CourseDetails() {
 	};
 
 	return (
-		<div className='bg-[#111827] sec-com'>
-			<div className='bg-[#111827] sec-com'>
-				<div className='max-w-5xl container-cus'>
-					<button
-						className='px-4 py-2 mb-4 text-white transition-colors bg-orange-600 rounded hover:bg-orange-700'
-						onClick={handleBack}
-					>
-						&larr; Back to Courses
-					</button>
-					<div className='mb-6 text-center'>
-						<h1 className='text-4xl font-bold text-orange-600'>{name}</h1>
-					</div>
-
-					<div className='flex flex-col gap-6 lg:flex-row'>
-						<div className='w-full lg:w-2/3'>
-							<div className='p-4 mb-4 rounded-lg shadow-lg bg-orange-50'>
-								<h2 className='mb-2 text-xl font-semibold text-orange-600'>Course Description</h2>
-								<div className='p-2 bg-white border border-orange-200 rounded quill-container'>
-									<ReactQuill value={description} readOnly={true} theme='bubble' />
-								</div>
-							</div>
-							<div className='flex flex-col gap-4 mb-6'>
-								<div className='flex items-center justify-between p-4 rounded-lg shadow bg-orange-50'>
-									<span className='font-medium text-gray-600'>Duration:</span>
-									<span className='text-gray-700'>{duration}</span>
-								</div>
-								<div className='flex items-center justify-between p-4 rounded-lg shadow bg-orange-50'>
-									<span className='font-medium text-gray-600'>Price:</span>
-									<span className='text-2xl font-semibold text-orange-700'>
-										{price.toLocaleString()}đ
-									</span>
-								</div>
-								<div className='flex items-center justify-between p-4 rounded-lg shadow bg-orange-50'>
-									<span className='font-medium text-gray-600'>Difficulty:</span>
-									<span className='text-gray-700'>{difficulty}</span>
-								</div>
-							</div>
-							<button
-								className='w-full py-3 font-semibold text-white transition-transform transform bg-orange-600 rounded-lg hover:bg-orange-700'
-								onClick={handlePayment}
-							>
-								Subscribe
-							</button>
-						</div>
-
-						<div className='w-full space-y-6 lg:w-1/3'>
-							<div className='p-4 rounded-lg shadow bg-orange-50'>
-								<h3 className='mb-3 text-lg font-semibold text-orange-600'>Course Workouts</h3>
-								<ul className='space-y-2 list-disc list-inside'>
-									{Array.isArray(workoutId) && workoutId.length > 0 ? (
-										workoutId.map((workout, index) => (
-											<li key={index} className='text-gray-600'>
-												{workout?.name || workout?._id || 'Unnamed workout'}
-											</li>
-										))
-									) : (
-										<li className='text-gray-500'>No workouts available</li>
-									)}
-								</ul>
-							</div>
-
-							<div className='p-4 rounded-lg shadow bg-orange-50'>
-								<h3 className='mb-3 text-lg font-semibold text-orange-600'>Coach</h3>
-								<p className='text-base text-gray-600'>
-									{coachId && coachId.accountId
-										? coachId.accountId.name
-										: coachId?._id || 'No coach assigned'}
+		<section className='bg-black'>
+			<div className='space-y-4 sec-com'>
+				<div className='container-cus lg:flex lg:gap-20'>
+					{/* Blog Posts */}
+					<div className='flex flex-col gap-10 lg:w-2/3'>
+						<div className='flex flex-col gap-3 overflow-hidden rounded-lg'>
+							{/* swiper image */}
+							<div className='flex flex-col gap-2'>
+								<Swiper
+									modules={[Pagination, Navigation]}
+									pagination={{ clickable: true }}
+									className='z-0 w-full mySwiper'
+									autoplay={true}
+								>
+									{images.map((image, index) => (
+										<SwiperSlide key={index}>
+											<img
+												src={image}
+												alt={`Slide ${index}`}
+												className='object-cover w-full h-80'
+											/>
+										</SwiperSlide>
+									))}
+								</Swiper>
+								<p className='text-gray-500'>
+									<p className='text-base text-gray-600'>
+										{coachId && coachId.accountId
+											? coachId.accountId.name
+											: coachId?._id || 'No coach assigned'}
+									</p>
+									<span className='font-semibold text-orange-600'>{difficulty}</span>
+								</p>
+								{Array.isArray(workoutId) && workoutId.length > 0 ? (
+									workoutId.map((workout, index) => (
+										<li key={index} className='text-gray-600'>
+											{workout?.name || workout?._id || 'Unnamed workout'}
+										</li>
+									))
+								) : (
+									<li className='text-gray-500'>No workouts available</li>
+								)}
+								<div
+									className='text-lg text-gray-500'
+									dangerouslySetInnerHTML={{ __html: description }}
+								></div>
+								<p>
+									Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, et recusandae
+									fugit velit porro dolore! Omnis, beatae. Quas delectus atque dolor at minus sint,
+									voluptate quae laboriosam officia ratione nostrum. Rerum at libero eius iste iure
+									nesciunt obcaecati in nulla perspiciatis facere totam molestias ad maiores laborum
+									magnam, saepe adipisci minus vel natus! Sunt ullam nemo architecto dignissimos id
+									nulla. Distinctio repellendus nemo cum quis ducimus officiis eum esse nihil.
+									Recusandae sequi optio libero? Tempora soluta qui modi, reprehenderit architecto
+									inventore? Ea eum mollitia quaerat excepturi velit quod, quidem illo? Illo aut,
+									laudantium voluptas architecto nostrum eos sapiente sed est corporis fugiat
+									perspiciatis, unde officia eaque! Minus, quod voluptas porro recusandae eveniet ex
+									dolor aliquid, fuga nobis rerum doloremque. Nostrum? Tempora magni consectetur
+									pariatur quidem sunt quibusdam autem fuga doloribus in eaque, id voluptate sed
+									corporis aspernatur voluptatibus exercitationem explicabo laborum. Aspernatur
+									doloribus illo soluta voluptatem exercitationem veniam earum ipsam. Illum in
+									sapiente qui quam vel enim eos dolorum aspernatur soluta earum tempore repellendus,
+									fuga temporibus pariatur libero nemo. Quibusdam pariatur tenetur odit aperiam illo,
+									rem eum reiciendis dolorum quasi. Libero corrupti in eos distinctio culpa voluptatem
+									debitis, nostrum, saepe exercitationem quod assumenda reiciendis ratione velit
+									veniam ipsam dolorem repellendus hic quos provident impedit ducimus explicabo
+									sapiente tempore. Veritatis, possimus. Praesentium rem delectus assumenda
+									exercitationem provident, itaque veniam, modi, nesciunt repellat minima cumque sunt
+									perspiciatis velit? Velit in dolorem suscipit ea nemo repellendus labore fuga
+									praesentium consequatur nihil, id nam. Porro doloremque aspernatur unde fugiat ullam
+									dicta cupiditate ducimus rerum nostrum nihil, autem neque itaque fuga natus.
+									Provident libero quos corporis ut aliquam! Praesentium, dolorum maxime ratione eius
+									ducimus corrupti! Quae dicta harum quo! Enim deserunt architecto ipsam placeat!
+									Veritatis, ducimus voluptates molestiae eaque est doloremque veniam ratione sit
+									dolores. Tempora accusantium maiores, voluptates soluta ex alias quam vitae
+									deserunt. Eveniet officia iste, ipsa exercitationem ut cupiditate blanditiis aut
+									culpa sed voluptatibus, nam neque obcaecati quas a. Accusantium hic maxime
+									laboriosam neque! Ratione labore, velit tempora suscipit voluptates eaque possimus.
+									Ducimus expedita fugit magnam iure sunt culpa assumenda voluptates accusamus
+									doloremque ex deleniti placeat odio facere asperiores tenetur, necessitatibus
+									accusantium id voluptatibus perspiciatis porro repudiandae ea reprehenderit
+									dignissimos dolorum. Autem?
 								</p>
 							</div>
 						</div>
+						<TertiaryButton onClick={handlePayment}>Subscribe</TertiaryButton>
+						{/* Pagination */}
 					</div>
+
+					{/* Sidebar */}
+					<aside className='hidden lg:block lg:w-1/3'>
+						<div className='sticky flex flex-col gap-10 top-24'>
+							<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+							<Categories />
+							<RecentPosts />
+						</div>
+					</aside>
 				</div>
 			</div>
-		</div>
+		</section>
 	);
 }
 
