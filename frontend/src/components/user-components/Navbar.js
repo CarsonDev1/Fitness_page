@@ -100,7 +100,13 @@ function Navbar() {
 						<ul className='flex flex-col items-start gap-6 p-6 text-lg md:flex-row md:items-center md:gap-10 md:p-0 font-oswald'>
 							{['home', 'about', 'coach', 'course', 'blog', 'contact'].map((menu) => {
 								const path =
-									menu === 'coach' ? 'coach-details' : menu === 'course' ? 'course-details' : menu;
+									menu === 'home'
+										? ''
+										: menu === 'coach'
+										? 'coach-details'
+										: menu === 'course'
+										? 'course-details'
+										: menu;
 								const isActive = activeMenu === menu || activeMenu === path;
 
 								return (

@@ -141,7 +141,7 @@ function CourseDetails() {
 								</p>
 							</div>
 						</div>
-						<TertiaryButton onClick={handlePayment}>Subscribe</TertiaryButton>
+						<TertiaryButton to='/subscriptionCheckout'>Subscribe</TertiaryButton>
 						{/* Pagination */}
 					</div>
 
