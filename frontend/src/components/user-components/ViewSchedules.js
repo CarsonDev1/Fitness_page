@@ -13,7 +13,7 @@ import {
 	isSameMonth,
 } from 'date-fns';
 import axios from 'axios';
-import '../css/style.css'; // Remove this line if not needed
+import { FaDumbbell } from 'react-icons/fa';
 
 const ViewSchedules = () => {
 	const { subscriptionId } = useParams();
@@ -68,43 +68,28 @@ const ViewSchedules = () => {
 		}
 	};
 
-	const nextMonth = () => {
-		setCurrentMonth(addMonths(currentMonth, 1));
-	};
+	const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
+	const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
-	const prevMonth = () => {
-		setCurrentMonth(subMonths(currentMonth, 1));
-	};
-
-	const renderHeader = () => {
-		const dateFormat = 'MMMM yyyy';
-		return (
-			<div className='flex items-center justify-between mb-4 text-white'>
-				<button
-					onClick={prevMonth}
-					className='px-4 py-2 text-lg font-bold bg-gray-700 rounded hover:bg-gray-600'
-				>
-					Previous
-				</button>
-				<span className='text-2xl font-semibold'>{format(currentMonth, dateFormat)}</span>
-				<button
-					onClick={nextMonth}
-					className='px-4 py-2 text-lg font-bold bg-gray-700 rounded hover:bg-gray-600'
-				>
-					Next
-				</button>
-			</div>
-		);
-	};
+	const renderHeader = () => (
+		<div className='flex items-center justify-between mb-6 text-white'>
+			<button onClick={prevMonth} className='px-4 py-2 text-lg font-bold bg-orange-500 rounded hover:opacity-90'>
+				Previous
+			</button>
+			<span className='text-3xl font-semibold'>{format(currentMonth, 'MMMM yyyy')}</span>
+			<button onClick={nextMonth} className='px-4 py-2 text-lg font-bold bg-orange-500 rounded hover:opacity-90'>
+				Next
+			</button>
+		</div>
+	);
 
 	const renderDays = () => {
 		const days = [];
-		const dateFormat = 'eeee';
 		const startDate = startOfWeek(currentMonth);
 		for (let i = 0; i < 7; i++) {
 			days.push(
-				<th key={i} className='py-2 text-center text-gray-300'>
-					{format(addDays(startDate, i), dateFormat)}
+				<th key={i} className='py-2 font-semibold text-center text-gray-300'>
+					{format(addDays(startDate, i), 'eeee')}
 				</th>
 			);
 		}
@@ -130,16 +115,17 @@ const ViewSchedules = () => {
 				days.push(
 					<td
 						key={day}
-						className={`p-4 text-center cursor-pointer rounded-lg ${
+						className={`p-4 text-center cursor-pointer rounded-lg transition transform ${
 							!isSameMonth(day, monthStart)
 								? 'text-gray-500'
 								: isWorkoutDay
-								? 'bg-orange-500 text-white'
-								: 'text-gray-200'
-						} ${isSameDay(day, new Date()) ? 'bg-blue-600 text-white' : ''}`}
+								? 'bg-orange-500 text-white font-bold relative'
+								: 'text-gray-200 hover:bg-gray-800'
+						} ${isSameDay(day, new Date()) ? 'ring-2 ring-orange-400' : ''}`}
 						onClick={() => handleDateClick(cloneDay)}
 					>
 						<span>{formattedDate}</span>
+						{isWorkoutDay && <FaDumbbell className='absolute text-lg text-orange-200 top-1 right-1' />}
 					</td>
 				);
 				day = addDays(day, 1);
@@ -150,60 +136,51 @@ const ViewSchedules = () => {
 		return <tbody>{rows}</tbody>;
 	};
 
-	const closeModal = () => {
-		setShowPopup(false);
-	};
-
-	const renderPopup = () => {
-		return (
-			<div
-				className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center ${
-					showPopup ? 'block' : 'hidden'
-				}`}
-			>
-				<div className='w-11/12 max-w-md p-6 text-white bg-gray-800 rounded-lg shadow-lg'>
-					<h3 className='mb-4 text-lg font-semibold'>
-						Workout Details for {format(selectedDate, 'MMMM d, yyyy')}
-					</h3>
-					{workouts.length > 0 ? (
-						<ul className='space-y-2 list-disc list-inside'>
-							{workouts.map((workout) => (
-								<li key={workout._id}>
-									<strong>{workout.name}</strong> - {workout.status}
-								</li>
-							))}
-						</ul>
-					) : (
-						<p>No workout scheduled for this day.</p>
-					)}
-					<button
-						onClick={closeModal}
-						className='px-4 py-2 mt-4 text-white bg-red-600 rounded hover:bg-red-700'
-					>
-						Close
-					</button>
-				</div>
+	const renderPopup = () => (
+		<div
+			className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center ${
+				showPopup ? 'block' : 'hidden'
+			}`}
+		>
+			<div className='w-11/12 max-w-lg p-6 text-white bg-gray-900 rounded-lg shadow-lg'>
+				<h3 className='mb-4 text-xl font-semibold'>
+					Workout Details for {format(selectedDate, 'MMMM d, yyyy')}
+				</h3>
+				{workouts.length > 0 ? (
+					<ul className='space-y-2'>
+						{workouts.map((workout) => (
+							<li key={workout._id} className='p-2 bg-gray-700 rounded-md'>
+								<strong>{workout.name}</strong> - {workout.status}
+							</li>
+						))}
+					</ul>
+				) : (
+					<p>No workout scheduled for this day.</p>
+				)}
+				<button
+					onClick={() => setShowPopup(false)}
+					className='px-4 py-2 mt-4 bg-red-600 rounded hover:bg-red-700'
+				>
+					Close
+				</button>
 			</div>
-		);
-	};
+		</div>
+	);
 
 	return (
 		<section className='py-12 text-white bg-gray-900'>
-			<div className='px-4 mx-auto container-cus'>
+			<div className='mx-auto container-cus'>
 				<div className='mb-8 text-center'>
-					<h2 className='text-3xl font-bold'>Find Your Time</h2>
-					<p className='text-gray-400'>Your monthly workout schedule</p>
+					<h2 className='text-4xl font-bold'>Monthly Workout Schedule</h2>
+					<p className='text-gray-400'>Track your fitness goals effectively</p>
 				</div>
-
 				{renderHeader()}
-
 				<div className='overflow-x-auto'>
 					<table className='w-full border-collapse table-auto'>
 						<thead className='bg-gray-700'>{renderDays()}</thead>
 						{renderCells()}
 					</table>
 				</div>
-
 				{showPopup && renderPopup()}
 			</div>
 		</section>
