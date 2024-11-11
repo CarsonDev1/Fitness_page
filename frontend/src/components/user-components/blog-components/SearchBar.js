@@ -9,9 +9,9 @@ const SearchBar = ({ searchTerm, setSearchTerm }) => {
 				placeholder='Search here...'
 				value={searchTerm}
 				onChange={(e) => setSearchTerm(e.target.value)}
-				className='w-full px-4 border focus rounded-l-md !border-gray-250'
+				className='w-full px-4 border focus rounded-l-md !border-gray-200'
 			/>
-			<button className='focus ml-[-1px] rounded-r-md bg-red p-3 text-white'>
+			<button className='focus ml-[-1px] rounded-r-md bg-red-500 p-3 text-white'>
 				<FaSearch />
 			</button>
 		</div>

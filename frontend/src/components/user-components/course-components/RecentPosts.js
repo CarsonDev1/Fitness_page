@@ -16,15 +16,15 @@ function RecentPosts() {
 					<div className='flex flex-col w-full gap-2 p-4'>
 						<p className='flex items-center gap-2 text-sm font-semibold text-gray-500'>
 							<span className='font-bold'>Slot:</span>
-							<span className='font-semibold text-red'>{post.slot}</span>
+							<span className='font-semibold text-red-500'>{post.slot}</span>
 						</p>
 						<p className='flex items-center gap-2 text-lg font-semibold text-gray-500'>
 							<span className='font-bold'>Price:</span>
-							<span className='font-bold text-red'>{post.price}</span>
+							<span className='font-bold text-red-500'>{post.price}</span>
 						</p>
 						<p className='flex items-center gap-2 text-sm font-semibold text-gray-500'>
 							<span className='font-bold'>Difficulty:</span>
-							<span className='font-bold text-red'>{post.difficulty}</span>
+							<span className='font-bold text-red-500'>{post.difficulty}</span>
 						</p>
 						<TertiaryButton className='mt-3 text-white bg-red-500 hover:bg-red-600'>
 							Subscribe

@@ -54,60 +54,64 @@ const CoachesList = () => {
 	};
 
 	return (
-		<div className='flex flex-col items-center min-h-screen py-10 bg-[#111827]'>
-			<h1 className='mb-6 text-3xl font-bold text-orange-600'>Our Coaches</h1>
-			<div className='grid w-4/5 grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-				{currentCoaches.map((coach) => (
-					<div
-						key={coach._id}
-						className='p-6 transition duration-300 transform bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105'
-					>
-						<h2 className='mb-2 text-2xl font-semibold text-gray-800'>
-							{coach.accountId?.name || 'Unknown Coach'}
-						</h2>
-						<div className='flex items-center justify-center w-full h-48 mb-4 overflow-hidden rounded-lg shadow-md'>
-							<img
-								src={getImageSrc(coach.accountId?.avatar)}
-								alt={`${coach.accountId?.name || 'Unknown Coach'}'s profile`}
-								className='object-cover w-full h-full rounded-md'
-							/>
-						</div>
-						<p className='mb-4 text-sm text-gray-600'>{coach.introduce}</p>
-						<h3 className='mb-2 text-lg font-semibold text-orange-600'>Experience</h3>
-						<ul className='mb-4 space-y-1 text-gray-700 list-disc list-inside'>
-							{coach.experience.map((exp, index) => (
-								<li key={index}>
-									{exp.time} - {exp.workplace}
-								</li>
-							))}
-						</ul>
-						<Link to={`/coach/${coach._id}`}>
-							<button className='w-full py-2 mt-2 font-semibold text-white transition duration-300 bg-orange-600 rounded-md hover:bg-orange-500'>
-								View Details
-							</button>
-						</Link>
+		<div className='bg-[#111827] sec-com'>
+			<div className='container-cus'>
+				<div className='flex flex-col items-center bg-[#111827]'>
+					<h1 className='mb-6 text-3xl font-bold text-orange-600'>Our Coaches</h1>
+					<div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+						{currentCoaches.map((coach) => (
+							<div
+								key={coach._id}
+								className='p-6 flex flex-col justify-between transition duration-300 transform bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105'
+							>
+								<h2 className='mb-2 text-2xl font-semibold text-gray-800'>
+									{coach.accountId?.name || 'Unknown Coach'}
+								</h2>
+								<div className='flex items-center justify-center w-full h-48 mb-4 overflow-hidden rounded-lg shadow-md'>
+									<img
+										src={getImageSrc(coach.accountId?.avatar)}
+										alt={`${coach.accountId?.name || 'Unknown Coach'}'s profile`}
+										className='object-cover w-full h-full rounded-md'
+									/>
+								</div>
+								<p className='mb-4 text-sm text-gray-600'>{coach.introduce}</p>
+								<h3 className='mb-2 text-lg font-semibold text-orange-600'>Experience</h3>
+								<ul className='mb-4 space-y-1 text-gray-700 list-disc list-inside'>
+									{coach.experience.map((exp, index) => (
+										<li key={index}>
+											{exp.time} - {exp.workplace}
+										</li>
+									))}
+								</ul>
+								<Link to={`/coach/${coach._id}`}>
+									<button className='w-full py-2 mt-2 font-semibold text-white transition duration-300 bg-orange-600 rounded-md hover:bg-orange-500'>
+										View Details
+									</button>
+								</Link>
+							</div>
+						))}
 					</div>
-				))}
-			</div>
 
-			<div className='flex items-center justify-center mt-8 space-x-4'>
-				<button
-					className='px-4 py-2 text-gray-600 transition duration-300 bg-gray-300 rounded-lg hover:bg-gray-400'
-					onClick={handlePrevPage}
-					disabled={currentPage === 1}
-				>
-					Previous
-				</button>
-				<span className='font-semibold text-gray-700'>
-					Page {currentPage} of {totalPages}
-				</span>
-				<button
-					className='px-4 py-2 text-gray-600 transition duration-300 bg-gray-300 rounded-lg hover:bg-gray-400'
-					onClick={handleNextPage}
-					disabled={currentPage === totalPages}
-				>
-					Next
-				</button>
+					<div className='flex items-center justify-center mt-8 space-x-4'>
+						<button
+							className='px-4 py-2 text-gray-600 transition duration-300 bg-gray-300 rounded-lg hover:bg-gray-400'
+							onClick={handlePrevPage}
+							disabled={currentPage === 1}
+						>
+							Previous
+						</button>
+						<span className='font-semibold text-white'>
+							Page {currentPage} of {totalPages}
+						</span>
+						<button
+							className='px-4 py-2 text-gray-600 transition duration-300 bg-gray-300 rounded-lg hover:bg-gray-400'
+							onClick={handleNextPage}
+							disabled={currentPage === totalPages}
+						>
+							Next
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	);
