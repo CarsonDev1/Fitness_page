@@ -9,7 +9,7 @@ import 'react-quill/dist/quill.snow.css';
 import 'react-toastify/dist/ReactToastify.css';
 import './CoachProfile.css';
 
-const CoachProfile = () => {
+const CoachProfile = ({ toggleSidebar }) => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [profile, setProfile] = useState(null);
@@ -165,9 +165,20 @@ const CoachProfile = () => {
 	return (
 		<div className='w-full bg-gray-900'>
 			<ToastContainer />
+			<button onClick={toggleSidebar} className='block lg:hidden mb-4 p-2 bg-gray-800 text-white rounded'>
+				<svg
+					xmlns='http://www.w3.org/2000/svg'
+					className='inline-block w-6 h-6'
+					fill='none'
+					viewBox='0 0 24 24'
+					stroke='currentColor'
+				>
+					<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16m-7 6h7' />
+				</svg>
+			</button>
 			<div className='mt-5 container-cus'>
 				<div className='flex flex-col justify-between gap-4 md:flex-row'>
-					<div className='w-1/3 p-3 mb-4 bg-gray-900 shadow-2xl'>
+					<div className='w-full md:w-1/3 p-3 mb-4 bg-gray-900 shadow-2xl'>
 						<div className='flex flex-col items-center w-full'>
 							<div className='p-3 text-center'>
 								<img
@@ -226,7 +237,7 @@ const CoachProfile = () => {
 
 					<div className='w-full'>
 						{/* Tabs Navigation */}
-						<ul className='nav nav-tabs'>
+						<ul className='nav nav-tabs bg-gray-900'>
 							<li className='nav-item'>
 								<a
 									className={`nav-link ${activeTab === 'profile' ? 'active' : ''}`}
@@ -247,12 +258,12 @@ const CoachProfile = () => {
 							</li>
 						</ul>
 
-						<div className='tab-content'>
+						<div className='bg-gray-800/50 p-3'>
 							{/* Edit Profile Tab */}
 							{activeTab === 'profile' && (
 								<div className='tab-pane fade show active' id='profile'>
-									<div className='mt-3 shadow card'>
-										<div className='card-body'>
+									<div className='mt-3 text-white'>
+										<div className='shadow-lg'>
 											<form onSubmit={handleEditProfile}>
 												<div className='form-group'>
 													<label>Email</label>
@@ -325,8 +336,8 @@ const CoachProfile = () => {
 							{/* Edit Experience Tab */}
 							{activeTab === 'experience' && (
 								<div className='tab-pane fade show active' id='experience'>
-									<div className='mt-3 shadow card'>
-										<div className='card-body'>
+									<div className='mt-3 text-white'>
+										<div className='rounded-md'>
 											<div className='form-group'>
 												<label>Introduce</label>
 												{isEditing ? (

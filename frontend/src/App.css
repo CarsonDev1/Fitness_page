@@ -74,9 +74,9 @@ body {
 }
 
 .sec-com {
-	--padding-section: 4.8rem;
-	--padding-section-tl: 2.4rem;
-	--padding-section-mobile: 1.2rem;
+	--padding-section: 48px;
+	--padding-section-tl: 24px;
+	--padding-section-mobile: 12px;
 
 	padding: var(--padding-section) 0;
 }

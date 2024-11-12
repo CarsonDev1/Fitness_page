@@ -1,32 +1,15 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import logo from '../img/logo.png';
 
-const NavbarCoach = () => {
-	const [isOpen, setIsOpen] = useState(false);
-
-	const toggleNavbar = () => {
-		setIsOpen(!isOpen);
-	};
-
+const NavbarCoach = ({ isOpen, toggleSidebar }) => {
 	return (
-		<div className='bg-gray-900'>
-			{/* Button to toggle sidebar */}
-			<button onClick={toggleNavbar} className='block p-2 m-4 text-white bg-gray-900 rounded-md lg:hidden'>
-				<svg
-					xmlns='http://www.w3.org/2000/svg'
-					className='inline-block w-6 h-6'
-					fill='none'
-					viewBox='0 0 24 24'
-					stroke='currentColor'
-				>
-					<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16m-7 6h7' />
-				</svg>
-			</button>
-
+		<>
+			{/* Overlay for small screens */}
+			{isOpen && <div onClick={toggleSidebar} className='fixed inset-0 z-20 bg-black opacity-50 lg:hidden'></div>}
 			{/* Sidebar */}
 			<div
-				className={`fixed inset-y-0 left-0 z-10 h-screen flex flex-col justify-between w-64 text-white transition-transform bg-gray-900 border-r border-slate-200/50 ${
+				className={`fixed inset-y-0 left-0 z-30 h-full md:h-screen flex flex-col justify-between w-64 text-white transition-transform bg-gray-900 border-r border-slate-200/50 ${
 					isOpen ? 'translate-x-0' : '-translate-x-full'
 				} lg:translate-x-0 lg:relative lg:flex lg:w-64`}
 			>
@@ -36,49 +19,69 @@ const NavbarCoach = () => {
 					</div>
 					<ul className='mt-6 space-y-2'>
 						<li>
-							<Link
+							<NavLink
 								to='/coach/profile'
-								className='block px-4 py-2 transition rounded hover:bg-orange-600'
+								className={({ isActive }) =>
+									`block px-4 py-2 transition rounded hover:bg-orange-600 ${
+										isActive ? 'bg-orange-500' : ''
+									}`
+								}
 							>
 								Dashboard
-							</Link>
+							</NavLink>
 						</li>
 						<li>
-							<Link to='/coach/course' className='block px-4 py-2 transition rounded hover:bg-orange-600'>
+							<NavLink
+								to='/coach/course'
+								className={({ isActive }) =>
+									`block px-4 py-2 transition rounded hover:bg-orange-600 ${
+										isActive ? 'bg-orange-500' : ''
+									}`
+								}
+							>
 								Manage Course
-							</Link>
+							</NavLink>
 						</li>
 						<li>
-							<Link
+							<NavLink
 								to='/coach/create-course'
-								className='block px-4 py-2 transition rounded hover:bg-orange-600'
+								className={({ isActive }) =>
+									`block px-4 py-2 transition rounded hover:bg-orange-600 ${
+										isActive ? 'bg-orange-500' : ''
+									}`
+								}
 							>
 								Create Course
-							</Link>
+							</NavLink>
 						</li>
 						<li>
-							<Link
+							<NavLink
 								to='/coach/exercise-bank'
-								className='block px-4 py-2 transition rounded hover:bg-orange-600'
+								className={({ isActive }) =>
+									`block px-4 py-2 transition rounded hover:bg-orange-600 ${
+										isActive ? 'bg-orange-500' : ''
+									}`
+								}
 							>
 								Manage Exercise
-							</Link>
+							</NavLink>
 						</li>
 						<li>
-							<Link
+							<NavLink
 								to='/coach/subscription'
-								className='block px-4 py-2 transition rounded hover:bg-orange-600'
+								className={({ isActive }) =>
+									`block px-4 py-2 transition rounded hover:bg-orange-600 ${
+										isActive ? 'bg-orange-500' : ''
+									}`
+								}
 							>
 								Manage Subscription
-							</Link>
+							</NavLink>
 						</li>
 					</ul>
 				</div>
 			</div>
-
-			{/* Overlay for small screens */}
-			{isOpen && <div onClick={toggleNavbar} className='fixed inset-0 z-0 bg-black opacity-50 lg:hidden'></div>}
-		</div>
+		</>
 	);
 };
 

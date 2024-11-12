@@ -1,435 +1,353 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Modal, Button, Form } from "react-bootstrap";
-import ReactQuill from "react-quill"; // Import React Quill
-import "react-quill/dist/quill.snow.css"; // Import CSS của React Quill
-import "./ExerciseList.css";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Modal, Button, Form } from 'react-bootstrap';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
-const ExerciseList = () => {
-  const navigate = useNavigate();
-  const [exercises, setExercises] = useState([]); // Dữ liệu bài tập từ API
-  const [searchTerm, setSearchTerm] = useState(""); // Lưu giá trị tìm kiếm
-  const [show, setShow] = useState(false); // Trạng thái hiển thị modal chi tiết
-  const [showCreateModal, setShowCreateModal] = useState(false); // Trạng thái hiển thị modal tạo bài tập
-  const [selectedExercise, setSelectedExercise] = useState(null); // Bài tập được chọn để hiển thị trong modal
-  const [isEditing, setIsEditing] = useState(false); // Trạng thái chỉnh sửa
-  const [newExercise, setNewExercise] = useState({
-    name: "",
-    description: "",
-    exerciseType: "",
-    exerciseDuration: "",
-    video: "",
-    difficulty: "",
-  }); // Lưu trữ thông tin bài tập mới
+const ExerciseList = ({ toggleSidebar }) => {
+	const navigate = useNavigate();
+	const [exercises, setExercises] = useState([]);
+	const [searchTerm, setSearchTerm] = useState('');
+	const [show, setShow] = useState(false);
+	const [showCreateModal, setShowCreateModal] = useState(false);
+	const [selectedExercise, setSelectedExercise] = useState(null);
+	const [isEditing, setIsEditing] = useState(false);
+	const [newExercise, setNewExercise] = useState({
+		name: '',
+		description: '',
+		exerciseType: '',
+		exerciseDuration: '',
+		video: '',
+		difficulty: '',
+	});
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/coaches/exercises", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setExercises(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching exercises:", error);
-      });
-  }, []); // Chỉ chạy một lần khi component mount
+	useEffect(() => {
+		axios
+			.get('http://localhost:5000/api/coaches/exercises', {
+				headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+			})
+			.then((response) => setExercises(response.data))
+			.catch((error) => console.error('Error fetching exercises:', error));
+	}, []);
 
-  // Lọc các bài tập theo từ khóa tìm kiếm
-  const filteredExercises = exercises.filter(
-    (exercise) =>
-      !searchTerm ||
-      (exercise.name &&
-        exercise.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+	const filteredExercises = exercises.filter(
+		(exercise) => !searchTerm || (exercise.name && exercise.name.toLowerCase().includes(searchTerm.toLowerCase()))
+	);
 
-  // Hàm để hiển thị modal chi tiết
-  const handleShow = (exercise) => {
-    setSelectedExercise(exercise); // Lưu bài tập được chọn
-    setIsEditing(false); // Khi mở modal, tắt chế độ chỉnh sửa
-    setShow(true); // Hiển thị modal
-  };
+	const handleShow = (exercise) => {
+		setSelectedExercise(exercise);
+		setIsEditing(false);
+		setShow(true);
+	};
 
-  const handleClose = () => setShow(false);
+	const handleClose = () => setShow(false);
+	const handleEditToggle = () => setIsEditing(true);
 
-  const handleEditToggle = () => setIsEditing(true);
+	const handleSaveChanges = () => {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			alert('You need to be logged in to update an exercise.');
+			return;
+		}
+		axios
+			.put(
+				`http://localhost:5000/api/coaches/exercises/${selectedExercise._id}`,
+				{ ...selectedExercise },
+				{ headers: { Authorization: `Bearer ${token}` } }
+			)
+			.then((response) => {
+				setExercises(
+					exercises.map((exercise) => (exercise._id === selectedExercise._id ? response.data : exercise))
+				);
+				alert('Exercise updated successfully!');
+				setIsEditing(false);
+			})
+			.catch((error) => alert('Failed to update exercise.'));
+	};
 
-  const handleSaveChanges = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("You need to be logged in to update an exercise.");
-      return;
-    }
+	const handleDelete = (id) => {
+		if (window.confirm('Are you sure you want to delete this exercise?')) {
+			const token = localStorage.getItem('token');
+			axios
+				.delete(`http://localhost:5000/api/coaches/exercises/${id}`, {
+					headers: { Authorization: `Bearer ${token}` },
+				})
+				.then(() => setExercises(exercises.filter((exercise) => exercise._id !== id)))
+				.catch((error) => alert('Failed to delete exercise.'));
+		}
+	};
 
-    const exerciseId = selectedExercise._id;
-    console.log("exerciseId: ", exerciseId);
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
+		setSelectedExercise({ ...selectedExercise, [name]: value });
+	};
 
+	const handleDescriptionChange = (value) => {
+		setSelectedExercise({ ...selectedExercise, description: value });
+	};
 
-    console.log("Data being sent to the server:", {
-      name: selectedExercise.name,
-      description: selectedExercise.description,
-      exerciseType: selectedExercise.exerciseType,
-      exerciseDuration: selectedExercise.exerciseDuration,
-      video: selectedExercise.video,
-      difficulty: selectedExercise.difficulty,
-    });
+	const handleShowCreateModal = () => setShowCreateModal(true);
+	const handleCloseCreateModal = () => setShowCreateModal(false);
 
-    axios
-      .put(
-        `http://localhost:5000/api/coaches/exercises/${exerciseId}`,
-        {
-          name: selectedExercise.name,
-          description: selectedExercise.description,
-          exerciseType: selectedExercise.exerciseType,
-          exerciseDuration: selectedExercise.exerciseDuration,
-          video: selectedExercise.video,
-          difficulty: selectedExercise.difficulty,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        setExercises(
-          exercises.map((exercise) =>
-            exercise._id === selectedExercise._id ? response.data : exercise
-          )
-        );
-        alert("Exercise updated successfully!");
-        setIsEditing(false);
-      })
-      .catch((error) => {
-        console.error(
-          "Error updating exercise:",
-          error.response ? error.response.data : error.message
-        );
-        alert("Failed to update exercise.");
-      });
-  };
+	const handleNewExerciseChange = (e) => {
+		const { name, value } = e.target;
+		setNewExercise({ ...newExercise, [name]: value });
+	};
 
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this exercise?"
-    );
-    if (confirmDelete) {
-      const token = localStorage.getItem("token");
+	const handleCreateExercise = () => {
+		const token = localStorage.getItem('token');
+		axios
+			.post(
+				'http://localhost:5000/api/coaches/exercises',
+				{ ...newExercise },
+				{ headers: { Authorization: `Bearer ${token}` } }
+			)
+			.then((response) => {
+				setExercises([...exercises, response.data]);
+				alert('Exercise created successfully!');
+				handleCloseCreateModal();
+			})
+			.catch((error) => alert('Failed to create exercise.'));
+	};
 
-      axios
-        .delete(`http://localhost:5000/api/coaches/exercises/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Gửi token trong request để xác thực
-          },
-        })
-        .then(() => {
-          setExercises(exercises.filter((exercise) => exercise._id !== id));
-          alert("Exercise deleted successfully!");
-        })
-        .catch((error) => {
-          console.error("Error deleting exercise:", error);
-          alert("Failed to delete exercise.");
-        });
-    }
-  };
+	return (
+		<div className='flex flex-col items-center bg-gray-900 min-h-screen py-10'>
+			<div className='container-cus mx-auto bg-gray-900 rounded-lg'>
+				<button onClick={toggleSidebar} className='block lg:hidden mb-4 p-2 bg-gray-800 text-white rounded'>
+					<svg
+						xmlns='http://www.w3.org/2000/svg'
+						className='inline-block w-6 h-6'
+						fill='none'
+						viewBox='0 0 24 24'
+						stroke='currentColor'
+					>
+						<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16m-7 6h7' />
+					</svg>
+				</button>
+				<h2 className='text-3xl lg:text-4xl font-bold text-white mb-6'>Exercise Bank</h2>
 
-  // Hàm để cập nhật giá trị của các trường khi chỉnh sửa
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setSelectedExercise({ ...selectedExercise, [name]: value });
-  };
+				<div className='flex flex-col lg:flex-row items-center justify-between gap-4'>
+					<input
+						type='text'
+						placeholder='Search exercises...'
+						className='text-white bg-gray-700 p-3 rounded-md w-full lg:w-1/2'
+						value={searchTerm}
+						onChange={(e) => setSearchTerm(e.target.value)}
+					/>
+					<Button variant='primary' onClick={handleShowCreateModal}>
+						Create New Exercise
+					</Button>
+				</div>
 
-  // Hàm để cập nhật phần mô tả khi dùng React Quill
-  const handleDescriptionChange = (value) => {
-    setSelectedExercise({ ...selectedExercise, description: value });
-  };
+				<div className='mt-6 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+					{filteredExercises.length > 0 ? (
+						filteredExercises.map((exercise) => (
+							<div
+								key={exercise._id}
+								className='bg-gray-700 p-4 rounded-md cursor-pointer'
+								onClick={() => handleShow(exercise)}
+							>
+								<h3 className='text-lg font-semibold text-white'>{exercise.name}</h3>
+								<p className='text-gray-400'>Type: {exercise.exerciseType}</p>
+								<button
+									className='text-red-400 mt-2'
+									onClick={(e) => {
+										e.stopPropagation();
+										handleDelete(exercise._id);
+									}}
+								>
+									Delete
+								</button>
+							</div>
+						))
+					) : (
+						<p className='text-gray-400'>No exercises found</p>
+					)}
+				</div>
 
+				<Modal show={showCreateModal} onHide={handleCloseCreateModal}>
+					<Modal.Header closeButton>
+						<Modal.Title>Create New Exercise</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<Form>
+							<Form.Group controlId='formNewName'>
+								<Form.Label>Name</Form.Label>
+								<Form.Control
+									type='text'
+									name='name'
+									value={newExercise.name}
+									onChange={handleNewExerciseChange}
+									required
+								/>
+							</Form.Group>
+							<Form.Group controlId='formNewDescription'>
+								<Form.Label>Description</Form.Label>
+								<ReactQuill
+									value={newExercise.description}
+									onChange={(value) => setNewExercise({ ...newExercise, description: value })}
+								/>
+							</Form.Group>
+							<Form.Group controlId='formNewType'>
+								<Form.Label>Type</Form.Label>
+								<Form.Control
+									type='text'
+									name='exerciseType'
+									value={newExercise.exerciseType}
+									onChange={handleNewExerciseChange}
+									required
+								/>
+							</Form.Group>
+							<Form.Group controlId='formNewDuration'>
+								<Form.Label>Duration</Form.Label>
+								<Form.Control
+									type='number'
+									name='exerciseDuration'
+									value={newExercise.exerciseDuration}
+									onChange={handleNewExerciseChange}
+									required
+								/>
+							</Form.Group>
+							<Form.Group controlId='formNewDifficulty'>
+								<Form.Label>Difficulty</Form.Label>
+								<Form.Control
+									type='text'
+									name='difficulty'
+									value={newExercise.difficulty}
+									onChange={handleNewExerciseChange}
+									required
+								/>
+							</Form.Group>
+							<Form.Group controlId='formNewVideo'>
+								<Form.Label>Video Link</Form.Label>
+								<Form.Control
+									type='text'
+									name='video'
+									value={newExercise.video}
+									onChange={handleNewExerciseChange}
+								/>
+							</Form.Group>
+						</Form>
+					</Modal.Body>
+					<Modal.Footer>
+						<Button variant='primary' onClick={handleCreateExercise}>
+							Create Exercise
+						</Button>
+						<Button variant='secondary' onClick={handleCloseCreateModal}>
+							Cancel
+						</Button>
+					</Modal.Footer>
+				</Modal>
 
-  // Hàm để mở modal tạo bài tập mới
-  const handleShowCreateModal = () => setShowCreateModal(true);
-
-  // Hàm để đóng modal tạo bài tập mới
-  const handleCloseCreateModal = () => setShowCreateModal(false);
-
-  // Hàm xử lý khi người dùng nhập thông tin bài tập mới
-  const handleNewExerciseChange = (e) => {
-    const { name, value } = e.target;
-    setNewExercise({ ...newExercise, [name]: value });
-  };
-
-  // Hàm để lưu bài tập mới
-  const handleCreateExercise = () => {
-    const token = localStorage.getItem("token");
-
-    axios
-      .post(
-        "http://localhost:5000/api/coaches/exercises",
-        { ...newExercise },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Gửi token trong request để xác thực
-          },
-        }
-      )
-      .then((response) => {
-        setExercises([...exercises, response.data]); // Cập nhật danh sách bài tập
-        alert("Exercise created successfully!");
-        handleCloseCreateModal(); // Đóng modal sau khi tạo thành công
-      })
-      .catch((error) => {
-        console.error("Error creating exercise:", error);
-        alert("Failed to create exercise.");
-      });
-  };
-
-  return (
-    <div className="exercise-list-container">
-      <h2 className="page-title">Exercise Bank</h2>
-
-      {/* Thanh tìm kiếm */}
-      <input
-        type="text"
-        placeholder="Search exercises..."
-        className="search-input"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)} // Cập nhật giá trị tìm kiếm
-      />
-
-      {/* Nút tạo bài tập mới */}
-      <Button variant="primary mb-3" onClick={handleShowCreateModal}>
-        Create New Exercise
-      </Button>
-
-      <div className="exercise-list">
-        {filteredExercises.length > 0 ? (
-          filteredExercises.map((exercise) => (
-            <div
-              key={exercise._id.$oid}
-              className="exercise-card"
-              onClick={() => handleShow(exercise)}
-            >
-              <h3 onClick={() => handleShow(exercise)}>{exercise.name}</h3>
-              <br />
-              <p>
-                <span>Type: </span>
-                {exercise.exerciseType}
-              </p>
-              <button
-                className="delete-button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(exercise._id?.$oid || exercise._id);
-                }}
-              >
-                ✖
-              </button>
-            </div>
-          ))
-        ) : (
-          <p>No exercises found</p>
-        )}
-      </div>
-
-      {/* Modal tạo bài tập mới */}
-      <Modal show={showCreateModal} onHide={handleCloseCreateModal}>
-        <Modal.Header closeButton>
-          <Modal.Title style={{ color: "#333" }}>
-            Create New Exercise
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form style={{ color: "black" }}>
-            <Form.Group controlId="formNewName">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                value={newExercise.name}
-                onChange={handleNewExerciseChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formNewDescription">
-              <Form.Label>Description</Form.Label>
-              <ReactQuill
-                value={newExercise.description}
-                onChange={(value) =>
-                  setNewExercise({ ...newExercise, description: value })
-                }
-              />
-            </Form.Group>
-            <Form.Group controlId="formNewType">
-              <Form.Label>Type</Form.Label>
-              <Form.Control
-                type="text"
-                name="exerciseType"
-                value={newExercise.exerciseType}
-                onChange={handleNewExerciseChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formNewDuration">
-              <Form.Label>Duration</Form.Label>
-              <Form.Control
-                type="number"
-                name="exerciseDuration"
-                value={newExercise.exerciseDuration}
-                onChange={handleNewExerciseChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formNewDifficulty">
-              <Form.Label>Difficulty</Form.Label>
-              <Form.Control
-                type="text"
-                name="difficulty"
-                value={newExercise.difficulty}
-                onChange={handleNewExerciseChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formNewVideo">
-              <Form.Label>Link video</Form.Label>
-              <Form.Control
-                type="text"
-                name="video"
-                value={newExercise.video}
-                onChange={handleNewExerciseChange}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={handleCreateExercise}>
-            Tạo bài tập
-          </Button>
-          <Button variant="secondary" onClick={handleCloseCreateModal}>
-            Hủy
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* Modal để hiển thị thông tin chi tiết hoặc chỉnh sửa */}
-      {selectedExercise && (
-        <Modal show={show} onHide={handleClose} >
-          <Modal.Header closeButton>
-            <Modal.Title style={{ color: "black" }}>
-              {isEditing ? "Edit Exercise" : selectedExercise.name}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {isEditing ? (
-              <Form style={{ color: "#333", marginBottom: "10px" }}>
-                <Form.Group controlId="formName">
-                  <Form.Label>Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={selectedExercise.name}
-                    onChange={handleInputChange}
-                  />
-                </Form.Group>
-                <Form.Group controlId="formDescription">
-                  <Form.Label>Description</Form.Label>
-                  <ReactQuill
-                    value={selectedExercise.description}
-                    onChange={handleDescriptionChange}
-                    style={{ color: "#000" }}
-                  />
-                </Form.Group>
-                <Form.Group controlId="formType">
-                  <Form.Label>Exercise Type</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="exerciseType"
-                    value={selectedExercise.exerciseType}
-                    onChange={handleInputChange}
-                  />
-                </Form.Group>
-                <Form.Group controlId="formDuration">
-                  <Form.Label>Duration (minutes)</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="exerciseDuration"
-                    value={selectedExercise.exerciseDuration}
-                    onChange={handleInputChange}
-                  />
-                </Form.Group>
-                <Form.Group controlId="formDifficulty">
-                  <Form.Label>Difficulty</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="difficulty"
-                    value={selectedExercise.difficulty}
-                    onChange={handleInputChange}
-                  />
-                </Form.Group>
-                <Form.Group controlId="formVideo">
-                  <Form.Label>Video Link</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="video"
-                    value={selectedExercise.video}
-                    onChange={handleInputChange}
-                  />
-                </Form.Group>
-              </Form>
-            ) : (
-              <>
-                <p>
-                  <strong>Description:</strong> {selectedExercise.description}
-                </p>
-                <p>
-                  <strong>Exercise Type:</strong>{" "}
-                  {selectedExercise.exerciseType}
-                </p>
-                <p>
-                  <strong>Duration:</strong> {selectedExercise.exerciseDuration}{" "}
-                  minutes
-                </p>
-                <p>
-                  <strong>Difficulty:</strong> {selectedExercise.difficulty}
-                </p>
-                <p>
-                  <strong>Video:</strong>{" "}
-                  <a
-                    href={selectedExercise.video}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Watch Video
-                  </a>
-                </p>
-              </>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            {isEditing ? (
-              <>
-                <Button variant="primary" onClick={handleSaveChanges}>
-                  Save Changes
-                </Button>
-                <Button variant="secondary" onClick={() => setIsEditing(false)}>
-                  Cancel
-                </Button>
-              </>
-            ) : (
-              <Button variant="warning" onClick={handleEditToggle}>
-                Edit
-              </Button>
-            )}
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
-    </div>
-  );
+				{selectedExercise && (
+					<Modal show={show} onHide={handleClose}>
+						<Modal.Header closeButton>
+							<Modal.Title>{isEditing ? 'Edit Exercise' : selectedExercise.name}</Modal.Title>
+						</Modal.Header>
+						<Modal.Body>
+							{isEditing ? (
+								<Form>
+									<Form.Group controlId='formName'>
+										<Form.Label>Name</Form.Label>
+										<Form.Control
+											type='text'
+											name='name'
+											value={selectedExercise.name}
+											onChange={handleInputChange}
+										/>
+									</Form.Group>
+									<Form.Group controlId='formDescription'>
+										<Form.Label>Description</Form.Label>
+										<ReactQuill
+											value={selectedExercise.description}
+											onChange={handleDescriptionChange}
+										/>
+									</Form.Group>
+									<Form.Group controlId='formType'>
+										<Form.Label>Exercise Type</Form.Label>
+										<Form.Control
+											type='text'
+											name='exerciseType'
+											value={selectedExercise.exerciseType}
+											onChange={handleInputChange}
+										/>
+									</Form.Group>
+									<Form.Group controlId='formDuration'>
+										<Form.Label>Duration (minutes)</Form.Label>
+										<Form.Control
+											type='number'
+											name='exerciseDuration'
+											value={selectedExercise.exerciseDuration}
+											onChange={handleInputChange}
+										/>
+									</Form.Group>
+									<Form.Group controlId='formDifficulty'>
+										<Form.Label>Difficulty</Form.Label>
+										<Form.Control
+											type='text'
+											name='difficulty'
+											value={selectedExercise.difficulty}
+											onChange={handleInputChange}
+										/>
+									</Form.Group>
+									<Form.Group controlId='formVideo'>
+										<Form.Label>Video Link</Form.Label>
+										<Form.Control
+											type='text'
+											name='video'
+											value={selectedExercise.video}
+											onChange={handleInputChange}
+										/>
+									</Form.Group>
+								</Form>
+							) : (
+								<>
+									<p>
+										<strong>Description:</strong> {selectedExercise.description}
+									</p>
+									<p>
+										<strong>Exercise Type:</strong> {selectedExercise.exerciseType}
+									</p>
+									<p>
+										<strong>Duration:</strong> {selectedExercise.exerciseDuration} minutes
+									</p>
+									<p>
+										<strong>Difficulty:</strong> {selectedExercise.difficulty}
+									</p>
+									<p>
+										<strong>Video:</strong>{' '}
+										<a href={selectedExercise.video} target='_blank' rel='noopener noreferrer'>
+											Watch Video
+										</a>
+									</p>
+								</>
+							)}
+						</Modal.Body>
+						<Modal.Footer>
+							{isEditing ? (
+								<>
+									<Button variant='primary' onClick={handleSaveChanges}>
+										Save Changes
+									</Button>
+									<Button variant='secondary' onClick={() => setIsEditing(false)}>
+										Cancel
+									</Button>
+								</>
+							) : (
+								<Button variant='warning' onClick={handleEditToggle}>
+									Edit
+								</Button>
+							)}
+							<Button variant='secondary' onClick={handleClose}>
+								Close
+							</Button>
+						</Modal.Footer>
+					</Modal>
+				)}
+			</div>
+		</div>
+	);
 };
 
 export default ExerciseList;

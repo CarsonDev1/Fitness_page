@@ -35,7 +35,7 @@ function Home() {
 						<SwiperSlide key={index} className='relative'>
 							<img className='object-cover w-full h-full' src={slide.image} alt='Description' />
 							<div className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-50'>
-								<div className='max-w-xl p-10 text-center'>
+								<div className='max-w-xl p-10 text-center text-gray-300'>
 									<span className='text-xl tracking-wide uppercase'>{slide.subtitle}</span>
 									<h1 className='mt-4 text-5xl font-bold leading-tight uppercase lg:text-7xl md:text-6xl'>
 										Be <span className='text-orange-600'>strong</span> <br /> Training hard
@@ -55,7 +55,7 @@ function Home() {
 
 			{/* Choose Us Section Begin */}
 			<section className='sec-com'>
-				<div className='mx-auto container-cus'>
+				<div className='mx-auto container-cus text-white'>
 					<div className='mb-12 text-center'>
 						<span className='text-lg'>Why choose us?</span>
 						<h2 className='text-4xl font-bold'>PUSH YOUR LIMITS FORWARD</h2>
@@ -88,7 +88,7 @@ function Home() {
 
 			{/* Team Section Begin */}
 			<section className='sec-com'>
-				<div className='mx-auto container-cus'>
+				<div className='mx-auto container-cus text-white'>
 					<div className='mb-12 text-center'>
 						<span className='text-lg'>Our Team</span>
 						<h2 className='text-4xl font-bold'>TRAIN WITH EXPERTS</h2>
