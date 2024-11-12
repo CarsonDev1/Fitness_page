@@ -41,12 +41,12 @@ function Navbar() {
 
 	const handleMoreClick = () => {
 		setIsSubmenuOpen(!isSubmenuOpen);
-		setIsUserMenuOpen(false); // Đóng User menu khi mở More menu
+		setIsUserMenuOpen(false);
 	};
 
 	const handleUserClick = () => {
 		setIsUserMenuOpen(!isUserMenuOpen);
-		setIsSubmenuOpen(false); // Đóng More menu khi mở User menu
+		setIsSubmenuOpen(false);
 	};
 
 	const handleLogout = () => {
@@ -122,9 +122,66 @@ function Navbar() {
 									</Link>
 								);
 							})}
+
+							{/* Mobile Login/User Profile Menu */}
+							<div className='flex md:hidden'>
+								{!isLoggedIn ? (
+									<Link
+										to='/signin'
+										className='px-4 py-2 text-white bg-orange-600 rounded-md hover:bg-orange-400 skew-x-[-10deg] transform'
+										onClick={() => setIsMenuOpen(false)}
+									>
+										Login
+									</Link>
+								) : (
+									<div className='relative' ref={userRef}>
+										<button
+											onClick={handleUserClick}
+											className='px-4 py-2 text-white bg-orange-600 rounded-md hover:bg-orange-400 skew-x-[-10deg] transform'
+										>
+											{userName || 'User'}
+										</button>
+										{isUserMenuOpen && (
+											<div className='absolute left-0 z-20 w-48 py-2 mt-2 bg-gray-900 rounded-lg shadow-2xl'>
+												<Link
+													to='/userProfile'
+													className='block px-4 py-3 text-white hover:bg-[#F36100] hover:text-gray-900 rounded-lg transition duration-300'
+													onClick={() => {
+														setIsUserMenuOpen(false);
+														setIsMenuOpen(false);
+													}}
+												>
+													User Profile
+												</Link>
+												<Link
+													to='/userSchedule'
+													className='block px-4 py-3 text-white hover:bg-[#F36100] hover:text-gray-900 rounded-lg transition duration-300'
+													onClick={() => {
+														setIsUserMenuOpen(false);
+														setIsMenuOpen(false);
+													}}
+												>
+													User Schedule
+												</Link>
+												<button
+													onClick={() => {
+														handleLogout();
+														setIsUserMenuOpen(false);
+														setIsMenuOpen(false);
+													}}
+													className='block w-full text-left px-4 py-3 text-white hover:bg-[#F36100] hover:text-gray-900 rounded-lg transition duration-300'
+												>
+													Logout
+												</button>
+											</div>
+										)}
+									</div>
+								)}
+							</div>
 						</ul>
 					</nav>
 
+					{/* Desktop Login/User Profile */}
 					<div className='items-center hidden gap-4 md:flex'>
 						{!isLoggedIn ? (
 							<Link

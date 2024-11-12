@@ -54,36 +54,46 @@ function Home() {
 			{/* Hero Section End */}
 
 			{/* Choose Us Section Begin */}
-			<section className='sec-com'>
-				<div className='mx-auto container-cus text-white'>
-					<div className='mb-12 text-center'>
-						<span className='text-lg'>Why choose us?</span>
-						<h2 className='text-4xl font-bold'>PUSH YOUR LIMITS FORWARD</h2>
+			<div className='bg-black'>
+				<section className='sec-com'>
+					<div className='mx-auto container-cus text-white'>
+						<div className='mb-12 text-center'>
+							<span className='text-lg'>Why choose us?</span>
+							<h2 className='text-4xl font-bold'>PUSH YOUR LIMITS FORWARD</h2>
+						</div>
+						<div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4'>
+							<div className='p-4 text-center'>
+								<span className='mb-4 text-5xl'>🚴</span>
+								<h4 className='text-xl font-semibold'>Modern equipment</h4>
+								<p className='text-gray-600'>
+									Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								</p>
+							</div>
+							<div className='p-4 text-center'>
+								<span className='mb-4 text-5xl'>💪</span>
+								<h4 className='text-xl font-semibold'>Trained instructors</h4>
+								<p className='text-gray-600'>
+									Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								</p>
+							</div>
+							<div className='p-4 text-center'>
+								<span className='mb-4 text-5xl'>🏋️</span>
+								<h4 className='text-xl font-semibold'>Fitness programs</h4>
+								<p className='text-gray-600'>
+									Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								</p>
+							</div>
+							<div className='p-4 text-center'>
+								<span className='mb-4 text-5xl'>🤝</span>
+								<h4 className='text-xl font-semibold'>Support community</h4>
+								<p className='text-gray-600'>
+									Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								</p>
+							</div>
+						</div>
 					</div>
-					<div className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4'>
-						<div className='p-4 text-center'>
-							<span className='mb-4 text-5xl'>🚴</span>
-							<h4 className='text-xl font-semibold'>Modern equipment</h4>
-							<p className='text-gray-600'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-						</div>
-						<div className='p-4 text-center'>
-							<span className='mb-4 text-5xl'>💪</span>
-							<h4 className='text-xl font-semibold'>Trained instructors</h4>
-							<p className='text-gray-600'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-						</div>
-						<div className='p-4 text-center'>
-							<span className='mb-4 text-5xl'>🏋️</span>
-							<h4 className='text-xl font-semibold'>Fitness programs</h4>
-							<p className='text-gray-600'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-						</div>
-						<div className='p-4 text-center'>
-							<span className='mb-4 text-5xl'>🤝</span>
-							<h4 className='text-xl font-semibold'>Support community</h4>
-							<p className='text-gray-600'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-						</div>
-					</div>
-				</div>
-			</section>
+				</section>
+			</div>
 			{/* Choose Us Section End */}
 
 			{/* Team Section Begin */}
